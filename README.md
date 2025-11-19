@@ -1,4 +1,4 @@
-# Minor Project – Idea → Narrated Video (ZeroGPU)
+# AI Story Video Generator
 
 End-to-end pipeline that turns an idea into a narrated, subtitled video using:
 
@@ -194,4 +194,5 @@ sessions/<id>/
   - Set `HF_TOKEN`, `HF_TOKEN_VIDEO`, and (if used) `GROQ_API_KEY` in `.env`.
 
 ---
+
 
