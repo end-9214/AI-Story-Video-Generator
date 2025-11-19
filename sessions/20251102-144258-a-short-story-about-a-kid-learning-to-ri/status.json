@@ -1,0 +1,17 @@
+{
+  "session_id": "20251102-144258-a-short-story-about-a-kid-learning-to-ri",
+  "idea": "A short story about a kid learning to ride a bicycle with help from dad",
+  "state": "scripts_ready",
+  "progress": {
+    "total_segments": 0,
+    "completed": 0
+  },
+  "artifacts": {},
+  "error": null,
+  "script_keys": [
+    "script1",
+    "script2",
+    "script3",
+    "script4"
+  ]
+}

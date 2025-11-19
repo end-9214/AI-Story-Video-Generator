@@ -1,0 +1,17 @@
+groq
+requests
+python-dotenv
+moviepy==1.0.3
+gradio==5.39.0
+black
+edge-tts
+huggingface_hub
+# Pillow 10+ removed Image.ANTIALIAS; MoviePy 1.0.3 expects it.
+pillow==9.5.0
+openai-whisper
+django
+djangorestframework
+django-cors-headers
+djangorestframework-simplejwt
+fastapi
+uvicorn

@@ -1,0 +1,68 @@
+{
+    "script4": {
+        "segment1": {
+            "image1": {
+                "prompt": "A medium shot of a young boy and his muscular loyal dog playing outside in a sunlit park with the dog running ahead and the boy laughing with a joyful expression on his face."
+            },
+            "image2": {
+                "prompt": "A low-angle wide shot of a young boy standing with his back to a tree and his loyal dog by his side looking out at the viewer with a mix of excitement and concern on his face as they overlook a serene park landscape."
+            }
+        },
+        "segment2": {
+            "image1": {
+                "prompt": "A wide shot from a slightly low angle capturing a young boy and his loyal dog standing still with concerned expressions on their faces as they gaze towards a rabid dog in the distance that has just escaped from its home in a sunlit park."
+            },
+            "image2": {
+                "prompt": "A close-up shot from a side angle focusing on a young boy's worried face with his eyes wide open and his mouth slightly ajar as he takes a step back while his loyal dog positions himself protectively in front of him with a fierce gaze fixed on the approaching rabid dog."
+            }
+        },
+        "segment3": {
+            "image1": {
+                "prompt": "A dynamic low-angle shot capturing a rabid dog with sharp teeth bared and eyes fixed running towards a young boy who is frozen in fear with a look of terror on his face in a sunlit park."
+            },
+            "image2": {
+                "prompt": "A medium close-up shot from a side angle focusing on the rabid dog's snarling face with its sharp teeth bared and eyes fixed on the young boy as it runs with a blurred background of the park and a sense of urgency in the air."
+            }
+        },
+        "segment4": {
+            "image1": {
+                "prompt": "A dynamic medium shot from a slightly low angle capturing a muscular loyal dog positioning himself between a young boy and a rabid dog with sharp teeth bared and eyes fixed charging towards them with bravery and urgency in a sunlit park."
+            },
+            "image2": {
+                "prompt": "A close-up shot from a side angle focusing on the rabid dog's snarling face with its sharp teeth bared and eyes fixed on the muscular loyal dog as it attacks him with a blurred background of the park and a sense of intense confrontation in the air."
+            }
+        },
+        "segment5": {
+            "image1": {
+                "prompt": "A dynamic medium close-up shot from a side angle capturing a muscular dog bravely fighting back a rabid dog with sharp teeth bared and eyes fixed as they struggle on the ground with a sense of intense confrontation in the air."
+            },
+            "image2": {
+                "prompt": "A low-angle wide shot capturing a muscular dog holding a rabid dog in place with his paws as the rabid dog snarls and struggles with a young boy watching anxiously in the background with a mix of fear and relief on his face."
+            }
+        },
+        "segment6": {
+            "image1": {
+                "prompt": "A medium shot from a slightly low angle capturing a young boy and his muscular loyal dog standing together with relieved expressions on their faces as the owner takes away the rabid dog with a sigh of relief and apologizes to them in a sunlit park."
+            },
+            "image2": {
+                "prompt": "A close-up shot from a side angle focusing on the owner's apologetic face with a mix of guilt and concern as he takes the rabid dog away while a young boy and his muscular loyal dog watch with gratitude and relief in their eyes in the background."
+            }
+        },
+        "segment7": {
+            "image1": {
+                "prompt": "A warm medium shot from a slightly low angle capturing a young boy with a big smile on his face hugging a muscular loyal dog tightly and thanking him for saving his life with a sunlit park background and a sense of gratitude and relief in the air."
+            },
+            "image2": {
+                "prompt": "A dynamic close-up shot from a side angle focusing on the joyful face of a young boy as he hugs a muscular loyal dog with tears of happiness in his eyes and a big smile on his face while the dog wags his tail and licks his face with a blurred background of a sunlit park."
+            }
+        },
+        "segment8": {
+            "image1": {
+                "prompt": "A warm medium close-up shot from a side angle capturing a muscular dog wagging his tail and licking a young boy's face with joy and happiness in his eyes and heart shining bright as they stand together in a sunlit park with a sense of gratitude and relief in the air."
+            },
+            "image2": {
+                "prompt": "A dynamic low-angle wide shot capturing a young boy and a muscular dog embracing each other with the dog's tail wagging wildly and the boy's arms wrapped tightly around the dog's neck as they share a heartfelt moment of friendship and loyalty in a sun-drenched park landscape with trees and flowers in the background."
+            }
+        }
+    }
+}

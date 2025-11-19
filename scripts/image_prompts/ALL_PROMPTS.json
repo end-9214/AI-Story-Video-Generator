@@ -1,0 +1,36 @@
+{
+    "script1": {
+        "segment1": {
+            "image1": {
+                "prompt": "A cinematic close-up shot with a 50mm lens of a lion's face, lit by soft rim light with volumetric shafts filtering through the dense forest canopy above, warm golden color palette, detailed texture of the lion's mane and whiskers, with a shallow depth of field blurring the bear in the background, conveying a sense of tension and curiosity as the lion sniffs the air, the bear's furry arm partially visible in the bokeh, mood: suspenseful, cinematic feel."
+            },
+            "image2": {
+                "prompt": "A wide-angle shot with a 24mm lens capturing the lion and bear standing face-to-face in a clearing, surrounded by towering trees with gnarled branches, late afternoon sunlight casting long shadows across the forest floor, cool blue-green color palette with hints of warm sunlight on the animals' fur, detailed texture of tree bark and leaves, with a sense of dynamic movement as the lion takes a step forward, the bear standing firm, mood: intense, environment depth cues emphasizing the vastness of the forest, cinematic feel."
+            }
+        },
+        "segment2": {
+            "image1": {
+                "prompt": "A low-angle wide shot captures the lion's intense pursuit through the dense underbrush, its tawny coat illuminated by soft rim light filtering through the canopy above, a 24mm lens providing a sense of expansive environment, with volumetric shafts of light piercing the gloom, bear's blurred legs a testament to its frantic flight, rich greens and browns dominate the color palette, evoking a sense of urgency and primal fear, rough tree bark and leaf textures sharply defined."
+            },
+            "image2": {
+                "prompt": "A high-angle close-up shot focuses on the bear's desperate sprint, its fur fluffed up, a 50mm lens compressing the scene, warm golden light from a late afternoon sun casting long shadows across the forest floor, highlighting the bear's tense muscles and the lion's outstretched claws in mid-air, a shallow depth of field blurs the background, emphasizing the chase's intimacy, earthy tones and soft focus on the lion's face convey a mood of suspense and peril, detailed texture of fur and leaf litter visible."
+            }
+        },
+        "segment3": {
+            "image1": {
+                "prompt": "A dynamic low-angle shot with a 24mm lens captures the intense moment as the lion lunges forward with claws outstretched, its muscles rippling beneath its tawny coat, while the bear suddenly veers to the side with a swift motion blur, sunlight casting soft rim lighting on their entwined forms amidst a savannah landscape with depth cues of acacia trees and distant rocky outcrops, warm golden light with volumetric shafts filtering through the trees, conveying a sense of urgency and desperation, with a muted earthy color palette and rough texture detail on their fur."
+            },
+            "image2": {
+                "prompt": "A cinematic aerial view with a 50mm lens showcases the chaotic scene from above, the lion's tawny fur a stark contrast to the bear's dark coat as they burst through a sun-drenched thicket of tall grasses and shrubs, the bear's swift evasive maneuver creating a whirlwind of dust and debris, the overhead sunlight casting long shadows and highlighting the texture of the savannah floor, a cool blue-green color palette with hints of warm light on their fur, conveying a sense of freedom and chaos, with a sharp focus on the turbulent motion of their paws and the surrounding vegetation."
+            }
+        },
+        "segment4": {
+            "image1": {
+                "prompt": "A highly detailed cinematic close-up shot with a shallow focus, taken with a 50mm lens, capturing the lion's frustrated face with soft rim lighting and volumetric shafts of light filtering through the savannah grass, warm golden hour color palette, with a blurred background of acacia trees and a defeated posture, conveying a sense of melancholy and despair, with intricate texture details on the lion's mane and wrinkled skin."
+            },
+            "image2": {
+                "prompt": "A highly detailed cinematic wide-angle shot with a 24mm lens, taken from a low angle, showcasing the lion standing alone in the vast savannah landscape with a sweeping vista of rolling hills and towering acacia trees, under a dramatic cloudy sky with a mix of warm and cool colors, with the lion's defeated posture and dejected expression conveying a sense of isolation and hopelessness, and a sense of dynamic movement with the wind blowing through the grass and the lion's tail swishing, with detailed textures of the grasslands and tree bark."
+            }
+        }
+    }
+}

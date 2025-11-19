@@ -1,0 +1,31 @@
+{
+  "session_id": "20251104-084919-wrtie-a-creative-story-for-kids-about-ho",
+  "idea": "wrtie a creative story for kids about honesty is the best policy",
+  "state": "completed",
+  "progress": {
+    "total_segments": 5,
+    "completed": 5
+  },
+  "artifacts": {
+    "final": "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251104-084919-wrtie-a-creative-story-for-kids-about-ho\\final_output.mp4",
+    "subtitled": "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251104-084919-wrtie-a-creative-story-for-kids-about-ho\\final_output_subtitled.mp4",
+    "segments": [
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251104-084919-wrtie-a-creative-story-for-kids-about-ho\\segments\\segment1\\segment1.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251104-084919-wrtie-a-creative-story-for-kids-about-ho\\segments\\segment2\\segment2.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251104-084919-wrtie-a-creative-story-for-kids-about-ho\\segments\\segment3\\segment3.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251104-084919-wrtie-a-creative-story-for-kids-about-ho\\segments\\segment4\\segment4.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251104-084919-wrtie-a-creative-story-for-kids-about-ho\\segments\\segment5\\segment5.mp4"
+    ]
+  },
+  "error": null,
+  "script_keys": [
+    "script1",
+    "script2",
+    "script3",
+    "script4"
+  ],
+  "selected_script": "script4",
+  "voice": "en-GB-ThomasNeural",
+  "mode": "images",
+  "current_segment": "segment5"
+}

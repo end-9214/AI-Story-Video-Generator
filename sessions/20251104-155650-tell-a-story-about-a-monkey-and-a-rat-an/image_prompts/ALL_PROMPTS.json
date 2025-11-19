@@ -1,0 +1,68 @@
+{
+    "script3": {
+        "segment1": {
+            "image1": {
+                "prompt": "A dynamic low-angle shot captures a muscular monkey and a slender rat standing back-to-back, surrounded by vibrant jungle city buildings and lush greenery, as they confidently gaze out at the bustling streets with a hint of mischief in their eyes."
+            },
+            "image2": {
+                "prompt": "A warm, golden light bathes a candid scene of a clever monkey and a quick-witted rat sitting on a tree stump, enthusiastically engaged in conversation with a group of animals, including a dog on a drum and a bird on maracas, amidst a serene jungle setting."
+            }
+        },
+        "segment2": {
+            "image1": {
+                "prompt": "A fast-paced, high-angle shot captures a mischievous monkey and a sly rat causing chaos in a peaceful jungle city, with animals scurrying about and debris scattered everywhere as they laugh and play amidst the mayhem."
+            },
+            "image2": {
+                "prompt": "A warm, low-angle shot showcases a clever monkey and a quick-witted rat sitting on a tree stump, surrounded by serene jungle greenery, as they glance at each other with a hint of trouble brewing in their eyes, with a few subtle hints of their past mischief scattered around them."
+            }
+        },
+        "segment3": {
+            "image1": {
+                "prompt": "A vibrant, low-angle shot captures a muscular monkey and a slender rat enthusiastically joining a group of animals trying to start a jungle band with various musical instruments, as they excitedly explore the drums and maracas amidst a lush jungle setting."
+            },
+            "image2": {
+                "prompt": "A soft, high-angle shot showcases a group of animals, including a human cat on a guitar and a bird on a flute, gathered around a makeshift stage in a serene jungle clearing, as a clever monkey and a quick-witted rat observe from a distance, their curiosity piqued."
+            }
+        },
+        "segment4": {
+            "image1": {
+                "prompt": "A dynamic low-angle shot captures a muscular monkey and a slender rat energetically playing drums and maracas, surrounded by a vibrant jungle setting and mesmerized animals, as they enthusiastically perform with reckless abandon, lost in the rhythm and music."
+            },
+            "image2": {
+                "prompt": "A soft, high-angle shot showcases a lively jungle gathering, with a group of animals, including a dog on a drum and a bird on maracas, watching in awe as a clever human-like cat and a quick-witted rodent bring the house down with their infectious musical energy, amidst lush greenery and colorful flowers."
+            }
+        },
+        "segment5": {
+            "image1": {
+                "prompt": "A vibrant low-angle shot captures a muscular monkey and a slender rat energetically playing drums and maracas, surrounded by a mesmerized crowd of animals, including a dancing human cat and a grooving dog, amidst a lush jungle setting with vibrant greenery and colorful flowers swaying to the rhythm."
+            },
+            "image2": {
+                "prompt": "A soft high-angle shot showcases a lively jungle gathering, with a group of animals, including a dog on a drum and a bird on maracas, watching in awe as a clever monkey and a quick-witted rodent bring the house down with their infectious musical energy, amidst lush greenery and colorful flowers, with a few animals swaying to the beat in the background."
+            }
+        },
+        "segment6": {
+            "image1": {
+                "prompt": "A vibrant, low-angle shot captures a muscular monkey and a slender rat shining brightly as star performers on a jungle band stage, surrounded by mesmerized animals, colorful flowers, and lush greenery, as they energetically play drums and maracas with infectious enthusiasm."
+            },
+            "image2": {
+                "prompt": "A soft, high-angle shot showcases a lively jungle gathering, with a group of animals watching in awe as a clever, human-like cat and a quick-witted rodent bring the house down with their musical energy, amidst lush greenery and vibrant flowers, with a few animals swaying to the beat in the background."
+            }
+        },
+        "segment7": {
+            "image1": {
+                "prompt": "A dramatic high-angle shot captures a muscular monkey and a slender rat standing on opposite sides of a cracked, worn-out drum, surrounded by scattered maracas and broken musical instruments, as they intensely argue with clenched fists and furrowed brows, amidst a dimly lit jungle setting with ominous clouds gathering in the background."
+            },
+            "image2": {
+                "prompt": "A warm, low-angle shot showcases a clever, agile human-like cat and a quick-witted rodent sitting on a tree stump, surrounded by serene jungle greenery, as they glance at each other with a hint of tension and disagreement, but still holding onto their beloved drums and maracas, with a few subtle hints of their past musical glory scattered around them."
+            }
+        },
+        "segment8": {
+            "image1": {
+                "prompt": "A warm, golden low-angle shot captures a muscular human and a slender rodent standing together, surrounded by vibrant jungle greenery and colorful flowers, as they joyfully play drums and maracas in perfect harmony, with a mesmerized crowd of animals swaying to the rhythm in the background."
+            },
+            "image2": {
+                "prompt": "A soft, high-angle shot showcases a serene jungle gathering, with a group of animals, including a dancing human cat and a grooving dog, watching in awe as a clever, agile human and a quick-witted rodent bring the house down with their infectious musical energy, amidst lush greenery and vibrant flowers, with a few animals sitting in contemplative silence in the foreground."
+            }
+        }
+    }
+}

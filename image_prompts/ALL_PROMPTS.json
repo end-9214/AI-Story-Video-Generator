@@ -1,0 +1,12 @@
+{
+    "script2": {
+        "segment1": {
+            "image1": {
+                "prompt": "A young boy with a determined expression rides a bike while wobbling, his legs pedaling furiously as he struggles to balance, with a blurred background of concerned onlookers, captured in a medium shot from a slight low angle."
+            },
+            "image2": {
+                "prompt": "A close-up shot from a side angle captures a small, frustrated human with a scrape on his knee, sitting on the ground, looking down at his scuffed knee with a mixture of disappointment and sadness, as a deflated bicycle lies still beside him."
+            }
+        }
+    }
+}

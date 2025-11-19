@@ -1,0 +1,32 @@
+{
+  "session_id": "20251118-141331-a-short-story-about-a-kid-learning-to-ri",
+  "idea": "A short story about a kid learning to ride a bicycle with help from dad",
+  "state": "completed",
+  "progress": {
+    "total_segments": 6,
+    "completed": 6
+  },
+  "artifacts": {
+    "final": "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251118-141331-a-short-story-about-a-kid-learning-to-ri\\final_output.mp4",
+    "subtitled": "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251118-141331-a-short-story-about-a-kid-learning-to-ri\\final_output_subtitled.mp4",
+    "segments": [
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251118-141331-a-short-story-about-a-kid-learning-to-ri\\segments\\segment1\\segment1.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251118-141331-a-short-story-about-a-kid-learning-to-ri\\segments\\segment2\\segment2.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251118-141331-a-short-story-about-a-kid-learning-to-ri\\segments\\segment3\\segment3.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251118-141331-a-short-story-about-a-kid-learning-to-ri\\segments\\segment4\\segment4.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251118-141331-a-short-story-about-a-kid-learning-to-ri\\segments\\segment5\\segment5.mp4",
+      "E:\\Karamveer\\minor-project\\main_minor_project\\sessions\\20251118-141331-a-short-story-about-a-kid-learning-to-ri\\segments\\segment6\\segment6.mp4"
+    ]
+  },
+  "error": null,
+  "script_keys": [
+    "script1",
+    "script2",
+    "script3",
+    "script4"
+  ],
+  "selected_script": "script2",
+  "voice": "en-IN-NeerjaNeural",
+  "mode": "images",
+  "current_segment": "segment6"
+}

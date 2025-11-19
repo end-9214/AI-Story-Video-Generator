@@ -1,0 +1,68 @@
+{
+    "script2": {
+        "segment1": {
+            "image1": {
+                "prompt": "A muscular young boy rides a bicycle with a determined expression while his supportive father runs alongside him providing guidance and cheering him on from a low-angle shot capturing their joyful faces."
+            },
+            "image2": {
+                "prompt": "From a high-angle view a young boy with a focused look steers his bicycle in a straight line with his father walking beside him offering words of encouragement and support on a sunny day."
+            }
+        },
+        "segment2": {
+            "image1": {
+                "prompt": "A low-angle shot captures a determined young boy with a focused expression pedaling a bicycle while his muscular father runs alongside him providing guidance and support on a sunny day."
+            },
+            "image2": {
+                "prompt": "From a high-angle view a young boy with a joyful face rides a bicycle with his father walking beside him offering words of encouragement and cheering him on as they move forward on a clear day."
+            }
+        },
+        "segment3": {
+            "image1": {
+                "prompt": "A low-angle shot captures a muscular young boy with a confident expression riding a bicycle with increasing speed and control, his face filled with joy and a sense of freedom as he pedals further without assistance on a sunny day."
+            },
+            "image2": {
+                "prompt": "From a high-angle view, a determined young boy with a focused look rides a bicycle in a smooth, flowing motion, his body relaxed and balanced as he glides along with ease, his supportive father watching from a distance with a proud smile on a clear day."
+            }
+        },
+        "segment4": {
+            "image1": {
+                "prompt": "A low-angle shot captures a muscular young boy with a joyful expression riding a bicycle while his supportive father runs alongside him cheering him on with a proud smile on a sunny day."
+            },
+            "image2": {
+                "prompt": "From a high-angle view a young boy with a determined look pedals a bicycle in a straight line with his father in the background watching him with a cheerful expression and arms outstretched in encouragement on a clear day."
+            }
+        },
+        "segment5": {
+            "image1": {
+                "prompt": "A low-angle shot captures a muscular young boy with a confident expression riding a bicycle with increasing speed and control, his face filled with joy and a sense of freedom as he pedals smoothly with his legs, his body balanced and relaxed on a sunny day with a few clouds in the background."
+            },
+            "image2": {
+                "prompt": "From a high-angle view, a determined young boy with a focused look rides a bicycle in a smooth, flowing motion on a clear day, his body positioned in a powerful stance with one leg bent and the other extended, his face set in a joyful expression as he glides along with ease and confidence."
+            }
+        },
+        "segment6": {
+            "image1": {
+                "prompt": "A low-angle shot captures a muscular young boy with a joyful expression riding a bicycle on his own with a sense of freedom and pride, his body relaxed and balanced as he pedals smoothly with his legs on a sunny day with a few clouds in the background."
+            },
+            "image2": {
+                "prompt": "From a high-angle view, a young boy with a happy face and a big smile rides a bicycle in a smooth, flowing motion around a park on a clear day, his body positioned in a powerful stance with one leg bent and the other extended, feeling joyful and carefree as he enjoys the ride."
+            }
+        },
+        "segment7": {
+            "image1": {
+                "prompt": "A low-angle shot captures a muscular young boy with a joyful expression riding a bicycle around a park with a big smile on his face feeling happy and carefree as he pedals smoothly with his legs on a sunny day with a few clouds in the background."
+            },
+            "image2": {
+                "prompt": "From a high-angle view a young male human cat with a happy face and a big smile rides a muscular bicycle in a smooth flowing motion around a park on a clear day his body positioned in a powerful stance with one leg bent and the other extended feeling joyful and free as he enjoys the ride."
+            }
+        },
+        "segment8": {
+            "image1": {
+                "prompt": "A low-angle shot captures a muscular young male with a joyful expression receiving a big hug from his supportive father for being brave and trying, their faces filled with happiness and pride on a sunny day."
+            },
+            "image2": {
+                "prompt": "From a high-angle view, a young male with a happy face and a big smile is enveloped in a warm embrace by his proud father, both of them standing in a park with a clear blue sky and lush greenery in the background, exuding a sense of joy and accomplishment."
+            }
+        }
+    }
+}

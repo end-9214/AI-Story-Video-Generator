@@ -1,0 +1,44 @@
+{
+    "script4": {
+        "segment1": {
+            "image1": {
+                "prompt": "A sweeping low-angle shot of a muscular young boy standing on a hill, looking out at a vast landscape as a flock of birds fly overhead, symbolizing freedom and inspiration."
+            },
+            "image2": {
+                "prompt": "A warm close-up shot of a group of diverse children sitting in a circle, listening intently to a humanoid figure with a gentle smile, as rays of sunlight filter through the trees, representing hope and guidance."
+            }
+        },
+        "segment2": {
+            "image1": {
+                "prompt": "A dynamic medium shot of a group of diverse children walking in a line, looking up at a towering figure of a muscular human with a strong jawline and a gentle smile, as sunlight casts a warm glow on their faces, symbolizing inspiration and guidance."
+            },
+            "image2": {
+                "prompt": "A serene low-angle shot of a single young girl standing on a hill, looking out at a breathtaking sunset with a book clutched tightly in her hand, as a gentle breeze rustles her hair and a few birds fly overhead, representing hope and contemplation."
+            }
+        },
+        "segment3": {
+            "image1": {
+                "prompt": "A vibrant wide shot of a group of diverse children standing together, looking up at a large banner with the words 'Honesty is the Best Policy' written in bold letters, as a muscular human with a gentle smile stands before them, surrounded by a halo of light and a few fluttering papers, symbolizing inspiration and guidance."
+            },
+            "image2": {
+                "prompt": "A contemplative close-up shot of a single young boy sitting on a tree stump, looking down at a small piece of paper with a handwritten note that reads 'Always be honest', as a humanoid cat with a wise expression sits beside him, gazing out at a serene forest landscape with a few birds flying overhead, representing introspection and wisdom."
+            }
+        },
+        "segment4": {
+            "image1": {
+                "prompt": "A bright and uplifting medium shot of a group of diverse children standing in a semi-circle, looking up at a smiling human with a gentle expression, as they hold up their hands in a promise, surrounded by a few fluttering papers and a warm glow that symbolizes their commitment to honesty."
+            },
+            "image2": {
+                "prompt": "A poignant low-angle shot of a single young girl standing alone, looking down at a small piece of paper with a handwritten note that reads 'Always be honest', as a wise humanoid cat sits beside her, gazing up at a serene landscape with a few birds flying overhead, representing contemplation and wisdom."
+            }
+        },
+        "segment5": {
+            "image1": {
+                "prompt": "A warm and uplifting medium shot of a group of diverse children standing together, looking up at a smiling human with a gentle expression, as they hold up their hands in a promise, surrounded by a few fluttering papers and a warm glow that symbolizes their commitment to honesty, with a soft focus on the children's faces and a shallow depth of field."
+            },
+            "image2": {
+                "prompt": "A poignant and contemplative low-angle shot of a single young girl standing alone, looking down at a small piece of paper with a handwritten note that reads 'Always be honest', as a wise humanoid cat with a gentle expression sits beside her, gazing up at a serene landscape with a few birds flying overhead, representing contemplation and wisdom, with a deep depth of field and a warm color palette."
+            }
+        }
+    }
+}

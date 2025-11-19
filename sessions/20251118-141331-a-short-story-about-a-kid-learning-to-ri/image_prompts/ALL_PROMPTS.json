@@ -1,0 +1,52 @@
+{
+    "script2": {
+        "segment1": {
+            "image1": {
+                "prompt": "A young boy with a determined expression rides a bike, wobbling as he pedals slowly forward with his dad sitting behind him holding the bike steady, from a low-angle shot."
+            },
+            "image2": {
+                "prompt": "A muscular human figure of a father runs alongside his child who is riding a bike, providing support and guidance as the child gains confidence, captured in a wide-angle dynamic shot."
+            }
+        },
+        "segment2": {
+            "image1": {
+                "prompt": "A young boy with a focused expression pedals slowly forward on a bike as his supportive father sits behind him holding the bike steady on a sunny day, captured in a medium close-up shot."
+            },
+            "image2": {
+                "prompt": "From a low-angle perspective, a determined human figure of a boy rides a bike with his muscular father running alongside, providing guidance and support as he gains balance and control, set against a blurred background of a residential street."
+            }
+        },
+        "segment3": {
+            "image1": {
+                "prompt": "A young boy with a focused expression rides a bike slowly, gaining more balance and control on two wheels as he pedals forward with increased confidence, captured in a medium close-up shot from a slight low-angle perspective."
+            },
+            "image2": {
+                "prompt": "From a wide-angle dynamic shot, a human figure of a boy is seen riding a bike with a look of determination, as he slowly glides forward on two wheels, with a subtle blurred background of a residential street, conveying a sense of freedom and progression."
+            }
+        },
+        "segment4": {
+            "image1": {
+                "prompt": "A young boy with a huge smile rides a bike on his own, pedaling forward with increased confidence as he looks back at his proud father in the background, captured in a medium close-up shot from a slight low-angle perspective."
+            },
+            "image2": {
+                "prompt": "From a wide-angle dynamic shot, a muscular human figure of a father watches with a proud expression as his child rides a bike freely ahead, conveying a sense of accomplishment and joy, set against a blurred background of a sunny residential street."
+            }
+        },
+        "segment5": {
+            "image1": {
+                "prompt": "A young boy with a huge smile rides a bike on his own, pedaling forward with increased confidence as he looks back at his proud muscular father in the background, captured in a medium close-up shot from a slight low-angle perspective, conveying a sense of accomplishment and joy."
+            },
+            "image2": {
+                "prompt": "From a wide-angle dynamic shot, a human figure of a boy is seen riding a bike freely ahead, with a blurred background of a sunny residential street, as he turns back to share a proud glance with his father, who is running alongside with a supportive and happy expression, capturing a moment of pure triumph."
+            }
+        },
+        "segment6": {
+            "image1": {
+                "prompt": "A young boy with a beaming smile rides a bike towards his muscular father, embracing him tightly as he says thanks, captured in a medium close-up shot from a slight low-angle perspective, conveying a sense of gratitude and love."
+            },
+            "image2": {
+                "prompt": "From a wide-angle dynamic shot, a human figure of a father is seen receiving a tight hug from his young son, who is riding a bike and expressing his heartfelt thanks, set against a blurred background of a sunny residential street, capturing a moment of pure joy and appreciation."
+            }
+        }
+    }
+}
