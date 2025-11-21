@@ -3,7 +3,6 @@ import json as json_mod
 from json import JSONDecodeError
 import re
 import uuid
-import asyncio
 import contextlib
 from datetime import datetime
 from typing import Dict, List
@@ -12,14 +11,21 @@ from typing import Dict, List
 from scripts.llm import get_llm_response, generate_prompts_for_script
 from images.image_gen import generate_image_from_prompt
 from images.image_to_video import generate_video_from_image
-from images.hf_inference_image_gen import generate_and_save_image as hf_generate_and_save_image
 from videogeneration.combine import combine_two_videos
 from videogeneration.images_slideshow import build_segment_from_images
-from voicegeneration.voice_gen import generate_audio as tts_generate_audio
 from videogeneration.subtitles import auto_subtitle_with_whisper
+from utils.common import (
+    run_tts,
+    generate_image_with_fallback,
+    generate_video_with_retries,
+)
 
-from moviepy.editor import AudioFileClip, VideoFileClip, concatenate_videoclips, ImageClip
-import time
+from moviepy.editor import (
+    AudioFileClip,
+    VideoFileClip,
+    concatenate_videoclips,
+    ImageClip,
+)
 
 
 def slugify(text: str, max_len: int = 40) -> str:
@@ -40,7 +46,9 @@ def ensure_env_vars() -> None:
         missing.append("HF_TOKEN_VIDEO (image-to-video)")
     if missing:
         print("Warning: Missing environment variables -> " + ", ".join(missing))
-        print("Set them in a .env file or your environment before running for full functionality.")
+        print(
+            "Set them in a .env file or your environment before running for full functionality."
+        )
 
 
 def pick_script_key(scripts: Dict[str, dict]) -> str:
@@ -51,7 +59,8 @@ def pick_script_key(scripts: Dict[str, dict]) -> str:
 
     print("\nGenerated scripts:")
     ordered_keys = sorted(
-        valid.keys(), key=lambda s: int(re.findall(r"\d+", s)[0]) if re.findall(r"\d+", s) else 0
+        valid.keys(),
+        key=lambda s: int(re.findall(r"\d+", s)[0]) if re.findall(r"\d+", s) else 0,
     )
     for idx, key in enumerate(ordered_keys, 1):
         segs = list(valid[key].keys())
@@ -60,7 +69,9 @@ def pick_script_key(scripts: Dict[str, dict]) -> str:
         if segs:
             first_seg = segs[0]
             preview = valid[key][first_seg]
-            print(f"     {first_seg}: {preview[:120]}{'...' if len(preview) > 120 else ''}")
+            print(
+                f"     {first_seg}: {preview[:120]}{'...' if len(preview) > 120 else ''}"
+            )
 
     while True:
         try:
@@ -96,10 +107,6 @@ def load_segment_prompts_from_disk(script_key: str, segment_key: str) -> dict | 
         return None
 
 
-def run_tts(text: str, voice: str, out_path: str) -> None:
-    asyncio.run(tts_generate_audio(text=text, voice=voice, output_file=out_path))
-
-
 def audio_duration_seconds(audio_path: str) -> float:
     with AudioFileClip(audio_path) as ac:
         return float(ac.duration)
@@ -118,7 +125,9 @@ def concatenate_segments(segment_video_paths: List[str], output_path: str) -> No
                 c.close()
 
 
-def adjust_video_to_duration(video_path: str, target_duration: float, out_path: str | None = None, fps: int = 24) -> str:
+def adjust_video_to_duration(
+    video_path: str, target_duration: float, out_path: str | None = None, fps: int = 24
+) -> str:
     """Trim or pad a video so its duration matches target_duration exactly.
 
     - If longer: trims to target_duration
@@ -159,7 +168,9 @@ def adjust_video_to_duration(video_path: str, target_duration: float, out_path: 
 def main():
     ensure_env_vars()
 
-    print("Welcome! This workflow will generate a narrated video from your idea, segment by segment.")
+    print(
+        "Welcome! This workflow will generate a narrated video from your idea, segment by segment."
+    )
     idea = input("Enter your idea: ").strip()
     if not idea:
         print("No idea provided. Exiting.")
@@ -190,49 +201,27 @@ def main():
         print(f"\nYou selected: {selected_key}")
         selected_script = scripts[selected_key]
 
-        print("\nImage prompts will be generated per segment with full-story context (resume-friendly)...")
+        print(
+            "\nImage prompts will be generated per segment with full-story context (resume-friendly)..."
+        )
 
         # Optional voice selection
         default_voice = os.getenv("EDGE_TTS_VOICE", "en-US-AriaNeural")
-        voice = input(f"\nEnter voice name (blank for default '{default_voice}'): ").strip() or default_voice
+        voice = (
+            input(f"\nEnter voice name (blank for default '{default_voice}'): ").strip()
+            or default_voice
+        )
 
         # Choose rendering mode
-        mode = input("\nRender mode? Type 'videos' for image-to-video or 'images' for images-only (default 'videos'): ").strip().lower()
+        mode = (
+            input(
+                "\nRender mode? Type 'videos' for image-to-video or 'images' for images-only (default 'videos'): "
+            )
+            .strip()
+            .lower()
+        )
         if mode not in {"videos", "images"}:
             mode = "videos"
-
-        # Read optional wait time before generating videos (to avoid rate limits)
-        try:
-            VIDEO_GEN_WAIT_SECONDS = float(os.getenv("VIDEO_GEN_WAIT_SECONDS", "10"))
-        except ValueError:
-            VIDEO_GEN_WAIT_SECONDS = 10.0
-        try:
-            VIDEO_GEN_MAX_RETRIES = int(os.getenv("VIDEO_GEN_MAX_RETRIES", "5"))
-        except ValueError:
-            VIDEO_GEN_MAX_RETRIES = 5
-
-        def _generate_video_with_retries(image_path: str, prompt: str, duration_seconds: float, label: str = "video") -> tuple[str, dict]:
-            """Generate a video from an image with waits and retries.
-
-            Returns the (filename, metadata) tuple that generate_video_from_image returns.
-            Raises the last exception if all retries fail.
-            """
-            attempt = 0
-            while attempt <= VIDEO_GEN_MAX_RETRIES:
-                if VIDEO_GEN_WAIT_SECONDS > 0:
-                    print(f"Waiting {VIDEO_GEN_WAIT_SECONDS:.1f}s before generating {label} (attempt {attempt+1}/{VIDEO_GEN_MAX_RETRIES+1})...")
-                    time.sleep(VIDEO_GEN_WAIT_SECONDS)
-                try:
-                    fn, meta = generate_video_from_image(image_path=image_path, prompt=prompt, duration_seconds=duration_seconds)
-                    return fn, meta
-                except Exception as e:  # noqa: B902 - retry on any exception from the video generator
-                    attempt += 1
-                    if attempt <= VIDEO_GEN_MAX_RETRIES:
-                        print(f"{label} generation failed (attempt {attempt}/{VIDEO_GEN_MAX_RETRIES+1}): {e}. Retrying after {VIDEO_GEN_WAIT_SECONDS:.1f}s...")
-                        time.sleep(VIDEO_GEN_WAIT_SECONDS)
-                    else:
-                        print(f"{label} generation failed after {attempt} attempts: {e}")
-                        raise
 
         segments_root = os.path.join(session_dir, "segments")
         os.makedirs(segments_root, exist_ok=True)
@@ -258,9 +247,15 @@ def main():
             if image_prompts:
                 print("Found existing prompts for this segment; reusing.")
             else:
-                print("Generating prompts for this segment (with full-script context and continuity)...")
+                print(
+                    "Generating prompts for this segment (with full-script context and continuity)..."
+                )
                 out = generate_prompts_for_script(selected_key, segment=seg_key)
-                image_prompts = out.get(seg_key) or load_segment_prompts_from_disk(selected_key, seg_key) or {}
+                image_prompts = (
+                    out.get(seg_key)
+                    or load_segment_prompts_from_disk(selected_key, seg_key)
+                    or {}
+                )
 
             prompt1 = image_prompts.get("image1", {}).get("prompt", seg_text)
             prompt2 = image_prompts.get("image2", {}).get("prompt", seg_text)
@@ -269,28 +264,14 @@ def main():
             print("Generating images...")
             img1_path = os.path.join(seg_dir, "image1.png")
             img2_path = os.path.join(seg_dir, "image2.png")
-            # Helper: try HF inference first, fall back to local image_gen if it fails
-            def _generate_image_with_fallback(prompt: str, save_path: str) -> None:
-                # Try HF inference-based generator first (used for 'images' mode).
-                # If it raises (eg. quota exhausted), fall back to the local Gradio-based generator.
-                try:
-                    hf_generate_and_save_image(prompt, save_path)
-                except Exception as e:  # noqa: B902 - fallback on any HF inference error (quota, network, etc.)
-                    print(f"HF image generation failed: {e}. Falling back to local generator.")
-                    # Use the standard image generator which calls the Gradio Space
-                    try:
-                        generate_image_from_prompt(prompt=prompt, save_path=save_path)
-                    except Exception as e2:  # noqa: B902 - include fallback failure in raised error
-                        # Re-raise the original HF error if fallback also fails, but include both errors for context
-                        raise RuntimeError(f"Both HF inference and fallback image generation failed: hf_error={e}; fallback_error={e2}") from e2
 
             if mode == "videos":
                 generate_image_from_prompt(prompt=prompt1, save_path=img1_path)
                 generate_image_from_prompt(prompt=prompt2, save_path=img2_path)
             else:
                 # images-only mode: prefer HF inference, but fallback to local generator on quota/other errors
-                _generate_image_with_fallback(prompt1, img1_path)
-                _generate_image_with_fallback(prompt2, img2_path)
+                generate_image_with_fallback(prompt1, img1_path)
+                generate_image_with_fallback(prompt2, img2_path)
 
             if mode == "videos":
                 # 4) Convert images to videos of half the audio duration each
@@ -302,15 +283,21 @@ def main():
                 os.chdir(seg_dir)
                 try:
                     print("Generating video 1 from image 1...")
-                    vid1_name, _ = _generate_video_with_retries(
-                        image_path=os.path.basename(img1_path), prompt=prompt1, duration_seconds=half, label="video 1",
+                    vid1_name = generate_video_with_retries(
+                        image_path=os.path.basename(img1_path),
+                        prompt=prompt1,
+                        duration_seconds=half,
+                        label="video 1",
                     )
                     vid1_path = os.path.join(seg_dir, vid1_name)
                     vid1_path = adjust_video_to_duration(vid1_path, half)
 
                     print("Generating video 2 from image 2...")
-                    vid2_name, _ = _generate_video_with_retries(
-                        image_path=os.path.basename(img2_path), prompt=prompt2, duration_seconds=half, label="video 2",
+                    vid2_name = generate_video_with_retries(
+                        image_path=os.path.basename(img2_path),
+                        prompt=prompt2,
+                        duration_seconds=half,
+                        label="video 2",
                     )
                     vid2_path = os.path.join(seg_dir, vid2_name)
                     vid2_path = adjust_video_to_duration(vid2_path, half)
@@ -326,8 +313,12 @@ def main():
             else:
                 # Images-only: build a segment video from two images with zoom, synced to audio
                 segment_video_path = os.path.join(seg_dir, f"{seg_key}.mp4")
-                print("Composing images-only segment (zoom effect) and attaching audio...")
-                build_segment_from_images([img1_path, img2_path], audio_path, segment_video_path)
+                print(
+                    "Composing images-only segment (zoom effect) and attaching audio..."
+                )
+                build_segment_from_images(
+                    [img1_path, img2_path], audio_path, segment_video_path
+                )
                 segment_output_paths.append(segment_video_path)
                 print(f"Completed {seg_key}: {segment_video_path}")
 
@@ -337,7 +328,9 @@ def main():
         concatenate_segments(segment_output_paths, final_output)
 
         # Auto-generate and burn subtitles with Whisper
-        print("Transcribing and burning subtitles with Whisper (requires ffmpeg + ImageMagick)...")
+        print(
+            "Transcribing and burning subtitles with Whisper (requires ffmpeg + ImageMagick)..."
+        )
         subtitled_output = os.path.join(session_dir, "final_output_subtitled.mp4")
         auto_subtitle_with_whisper(
             video_path=final_output,
@@ -351,7 +344,9 @@ def main():
             stroke_width=2,
             margin_bottom=40,
         )
-        print(f"\nAll done! Final videos:\n - No subtitles: {final_output}\n - Subtitled:   {subtitled_output}")
+        print(
+            f"\nAll done! Final videos:\n - No subtitles: {final_output}\n - Subtitled:   {subtitled_output}"
+        )
 
     finally:
         # Always go back to original working directory
@@ -360,4 +355,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

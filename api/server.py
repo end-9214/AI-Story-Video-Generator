@@ -1,10 +1,8 @@
 import os
 import json
-import time
 import uuid
 from datetime import datetime
 from typing import Dict, List, Optional
-from contextlib import contextmanager
 
 from fastapi import FastAPI, BackgroundTasks, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,12 +11,15 @@ from fastapi.responses import FileResponse
 # Reuse existing pipeline pieces
 from scripts.llm import get_llm_response, generate_prompts_for_script
 from images.image_gen import generate_image_from_prompt
-from images.image_to_video import generate_video_from_image
-from images.hf_inference_image_gen import generate_and_save_image as hf_generate_and_save_image
 from videogeneration.combine import combine_two_videos
 from videogeneration.images_slideshow import build_segment_from_images
-from voicegeneration.voice_gen import generate_audio as tts_generate_audio
 from videogeneration.subtitles import auto_subtitle_with_whisper
+from utils.common import (
+    run_tts,
+    generate_image_with_fallback,
+    generate_video_with_retries,
+    pushd,
+)
 
 # Utility helpers imported from main.py to keep behavior identical
 from main import (
@@ -28,23 +29,6 @@ from main import (
     concatenate_segments,
     adjust_video_to_duration,
 )
-
-
-@contextmanager
-def pushd(new_dir: str):
-    old = os.getcwd()
-    os.makedirs(new_dir, exist_ok=True)
-    os.chdir(new_dir)
-    try:
-        yield
-    finally:
-        os.chdir(old)
-
-
-def run_tts(text: str, voice: str, out_path: str) -> None:
-    # Reuse the async TTS behind a synchronous call
-    import asyncio
-    asyncio.run(tts_generate_audio(text=text, voice=voice, output_file=out_path))
 
 
 # ---------------- API scaffolding ----------------
@@ -63,6 +47,7 @@ VOICES_PATH = os.path.join(os.getcwd(), "voicegeneration", "voices.json")
 
 
 # -------- Status helpers --------
+
 
 def _status_path(session_dir: str) -> str:
     return os.path.join(session_dir, "status.json")
@@ -85,6 +70,7 @@ def _read_status(session_dir: str) -> Dict:
 
 
 # -------- Core generation logic (non-interactive) --------
+
 
 def create_session(idea: str) -> str:
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -131,41 +117,9 @@ def generate_scripts_for_session(session_id: str) -> Dict[str, Dict]:
     return scripts
 
 
-def _generate_image_with_fallback(prompt: str, save_path: str) -> None:
-    try:
-        hf_generate_and_save_image(prompt, save_path)
-    except Exception as e:
-        # Fallback to local generator
-        try:
-            generate_image_from_prompt(prompt=prompt, save_path=save_path)
-        except Exception as e2:
-            raise RuntimeError(
-                f"Both HF inference and fallback image generation failed: hf_error={e}; fallback_error={e2}"
-            ) from e2
-
-
-def _generate_video_with_retries(image_path: str, prompt: str, duration_seconds: float, label: str = "video") -> str:
-    wait_s = float(os.getenv("VIDEO_GEN_WAIT_SECONDS", "10"))
-    max_retries = int(os.getenv("VIDEO_GEN_MAX_RETRIES", "5"))
-    attempt = 0
-    last_err: Optional[Exception] = None
-    while attempt <= max_retries:
-        if wait_s > 0:
-            time.sleep(wait_s)
-        try:
-            name, _meta = generate_video_from_image(
-                image_path=image_path, prompt=prompt, duration_seconds=duration_seconds
-            )
-            return name
-        except Exception as e:  # retry on any
-            last_err = e
-            attempt += 1
-            if attempt > max_retries:
-                break
-    raise RuntimeError(f"{label} generation failed after {attempt} attempts: {last_err}")
-
-
-def run_pipeline(session_id: str, script_key: str, voice: Optional[str], mode: str = "videos") -> None:
+def run_pipeline(
+    session_id: str, script_key: str, voice: Optional[str], mode: str = "videos"
+) -> None:
     session_dir = os.path.join(SESSIONS_ROOT, session_id)
     if not os.path.isdir(session_dir):
         raise FileNotFoundError("Session not found")
@@ -178,7 +132,9 @@ def run_pipeline(session_id: str, script_key: str, voice: Optional[str], mode: s
     # Load scripts generated earlier (ensure exist)
     scripts_path = os.path.join(session_dir, "scripts.json")
     if not os.path.exists(scripts_path):
-        raise HTTPException(status_code=400, detail="Scripts not generated for this session yet.")
+        raise HTTPException(
+            status_code=400, detail="Scripts not generated for this session yet."
+        )
     with open(scripts_path, "r", encoding="utf-8") as f:
         scripts: Dict[str, Dict] = json.load(f)
     if script_key not in scripts or not isinstance(scripts[script_key], dict):
@@ -214,7 +170,12 @@ def run_pipeline(session_id: str, script_key: str, voice: Optional[str], mode: s
                 f.write(seg_text)
 
             # Update status
-            status.update({"current_segment": seg_key, "progress": {"total_segments": len(seg_keys), "completed": i - 1}})
+            status.update(
+                {
+                    "current_segment": seg_key,
+                    "progress": {"total_segments": len(seg_keys), "completed": i - 1},
+                }
+            )
             _write_status(session_dir, status)
 
             # 1) TTS
@@ -252,8 +213,8 @@ def run_pipeline(session_id: str, script_key: str, voice: Optional[str], mode: s
                 generate_image_from_prompt(prompt=prompt1, save_path=img1_path)
                 generate_image_from_prompt(prompt=prompt2, save_path=img2_path)
             else:
-                _generate_image_with_fallback(prompt1, img1_path)
-                _generate_image_with_fallback(prompt2, img2_path)
+                generate_image_with_fallback(prompt1, img1_path)
+                generate_image_with_fallback(prompt2, img2_path)
 
             if mode == "videos":
                 # 4) Convert to videos of half the audio duration each
@@ -261,14 +222,20 @@ def run_pipeline(session_id: str, script_key: str, voice: Optional[str], mode: s
                 half = max(dur / 2.0, 0.1)
 
                 with pushd(seg_dir):
-                    vid1_name = _generate_video_with_retries(
-                        image_path=os.path.basename(img1_path), prompt=prompt1, duration_seconds=half, label="video 1"
+                    vid1_name = generate_video_with_retries(
+                        image_path=os.path.basename(img1_path),
+                        prompt=prompt1,
+                        duration_seconds=half,
+                        label="video 1",
                     )
                     vid1_path = os.path.join(seg_dir, vid1_name)
                     vid1_path = adjust_video_to_duration(vid1_path, half)
 
-                    vid2_name = _generate_video_with_retries(
-                        image_path=os.path.basename(img2_path), prompt=prompt2, duration_seconds=half, label="video 2"
+                    vid2_name = generate_video_with_retries(
+                        image_path=os.path.basename(img2_path),
+                        prompt=prompt2,
+                        duration_seconds=half,
+                        label="video 2",
                     )
                     vid2_path = os.path.join(seg_dir, vid2_name)
                     vid2_path = adjust_video_to_duration(vid2_path, half)
@@ -280,10 +247,14 @@ def run_pipeline(session_id: str, script_key: str, voice: Optional[str], mode: s
             else:
                 # Images-only segment video with zoom
                 segment_video_path = os.path.join(seg_dir, f"{seg_key}.mp4")
-                build_segment_from_images([img1_path, img2_path], audio_path, segment_video_path)
+                build_segment_from_images(
+                    [img1_path, img2_path], audio_path, segment_video_path
+                )
                 segment_output_paths.append(segment_video_path)
 
-            status.update({"progress": {"total_segments": len(seg_keys), "completed": i}})
+            status.update(
+                {"progress": {"total_segments": len(seg_keys), "completed": i}}
+            )
             _write_status(session_dir, status)
 
         # Final concatenation
@@ -324,6 +295,7 @@ def run_pipeline(session_id: str, script_key: str, voice: Optional[str], mode: s
 
 # ---------------- Endpoints ----------------
 
+
 @app.post("/api/sessions", summary="Create a session from an idea")
 def api_create_session(payload: Dict[str, str]):
     idea = (payload or {}).get("idea", "").strip()
@@ -340,18 +312,28 @@ def api_generate_scripts(payload: Dict[str, str]):
         # Allow single-call create+scripts if only idea passed
         idea = (payload or {}).get("idea", "").strip()
         if not idea:
-            raise HTTPException(status_code=400, detail="Provide 'session_id' or 'idea'")
+            raise HTTPException(
+                status_code=400, detail="Provide 'session_id' or 'idea'"
+            )
         session_id = create_session(idea)
     scripts = generate_scripts_for_session(session_id)
     ordered_keys = sorted(
         [k for k, v in scripts.items() if isinstance(v, dict)],
-        key=lambda s: int(__import__("re").findall(r"\d+", s)[0]) if __import__("re").findall(r"\d+", s) else 0,
+        key=lambda s: (
+            int(__import__("re").findall(r"\d+", s)[0])
+            if __import__("re").findall(r"\d+", s)
+            else 0
+        ),
     )
     return {"session_id": session_id, "scripts": scripts, "ordered_keys": ordered_keys}
 
 
-@app.post("/api/sessions/{session_id}/run", summary="Start generation for a selected script")
-def api_run_session(session_id: str, payload: Dict[str, str], background: BackgroundTasks):
+@app.post(
+    "/api/sessions/{session_id}/run", summary="Start generation for a selected script"
+)
+def api_run_session(
+    session_id: str, payload: Dict[str, str], background: BackgroundTasks
+):
     script_key = (payload or {}).get("script_key", "").strip()
     if not script_key:
         raise HTTPException(status_code=400, detail="'script_key' is required")
@@ -359,20 +341,36 @@ def api_run_session(session_id: str, payload: Dict[str, str], background: Backgr
     mode = (payload or {}).get("mode", "videos")
 
     # Schedule background job
-    background.add_task(run_pipeline, session_id=session_id, script_key=script_key, voice=voice, mode=mode)
+    background.add_task(
+        run_pipeline,
+        session_id=session_id,
+        script_key=script_key,
+        voice=voice,
+        mode=mode,
+    )
 
     st = _read_status(os.path.join(SESSIONS_ROOT, session_id))
-    st.update({"state": "queued", "selected_script": script_key, "voice": voice, "mode": mode})
+    st.update(
+        {"state": "queued", "selected_script": script_key, "voice": voice, "mode": mode}
+    )
     _write_status(os.path.join(SESSIONS_ROOT, session_id), st)
 
-    return {"session_id": session_id, "status_url": f"/api/sessions/{session_id}", "message": "Generation started"}
+    return {
+        "session_id": session_id,
+        "status_url": f"/api/sessions/{session_id}",
+        "message": "Generation started",
+    }
 
 
 @app.get("/api/sessions", summary="List existing sessions")
 def api_list_sessions():
     if not os.path.exists(SESSIONS_ROOT):
         return {"sessions": []}
-    sessions = [d for d in os.listdir(SESSIONS_ROOT) if os.path.isdir(os.path.join(SESSIONS_ROOT, d))]
+    sessions = [
+        d
+        for d in os.listdir(SESSIONS_ROOT)
+        if os.path.isdir(os.path.join(SESSIONS_ROOT, d))
+    ]
     sessions.sort(reverse=True)
     return {"sessions": sessions}
 
@@ -407,19 +405,20 @@ def api_get_status(session_id: str, request: Request):
             if not os.path.isdir(seg_dir):
                 continue
             files = os.listdir(seg_dir)
-            images = [f for f in files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-            videos = [f for f in files if f.lower().endswith('.mp4')]
-            audios = [f for f in files if f.lower().endswith(('.mp3', '.wav', '.m4a'))]
+            images = [f for f in files if f.lower().endswith((".png", ".jpg", ".jpeg"))]
+            videos = [f for f in files if f.lower().endswith(".mp4")]
+            audios = [f for f in files if f.lower().endswith((".mp3", ".wav", ".m4a"))]
+
             # Convert to artifact URLs
             def _url(p: str) -> str:
                 # Return an absolute URL to download this artifact via the API
-                base = str(request.base_url).rstrip('/')
+                base = str(request.base_url).rstrip("/")
                 return f"{base}/api/sessions/{session_id}/artifact/{seg}/{p}"
 
             segments_info[seg] = {
-                "images": [ _url(f) for f in images ],
-                "videos": [ _url(f) for f in videos ],
-                "audios": [ _url(f) for f in audios ],
+                "images": [_url(f) for f in images],
+                "videos": [_url(f) for f in videos],
+                "audios": [_url(f) for f in audios],
             }
 
     st["segments_info"] = segments_info
@@ -430,14 +429,19 @@ def api_get_status(session_id: str, request: Request):
     for name in ("subtitled", "final"):
         p = artifacts.get(name)
         if p and os.path.exists(p):
-            base = str(request.base_url).rstrip('/')
-            art_urls[name] = f"{base}/api/sessions/{session_id}/artifact/{os.path.basename(p)}"
+            base = str(request.base_url).rstrip("/")
+            art_urls[name] = (
+                f"{base}/api/sessions/{session_id}/artifact/{os.path.basename(p)}"
+            )
     st["artifacts_urls"] = art_urls
 
     return st
 
 
-@app.get("/api/sessions/{session_id}/download/{kind}", summary="Download final or subtitled video")
+@app.get(
+    "/api/sessions/{session_id}/download/{kind}",
+    summary="Download final or subtitled video",
+)
 def api_download(session_id: str, kind: str):
     session_dir = os.path.join(SESSIONS_ROOT, session_id)
     if not os.path.isdir(session_dir):
@@ -447,14 +451,19 @@ def api_download(session_id: str, kind: str):
         "subtitled": os.path.join(session_dir, "final_output_subtitled.mp4"),
     }
     if kind not in file_map:
-        raise HTTPException(status_code=400, detail="kind must be 'final' or 'subtitled'")
+        raise HTTPException(
+            status_code=400, detail="kind must be 'final' or 'subtitled'"
+        )
     path = file_map[kind]
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail=f"{kind} video not available yet")
     return FileResponse(path, media_type="video/mp4", filename=os.path.basename(path))
 
 
-@app.get("/api/sessions/{session_id}/artifact/{relpath:path}", summary="Download an arbitrary artifact from a session (images, segment videos, audio)")
+@app.get(
+    "/api/sessions/{session_id}/artifact/{relpath:path}",
+    summary="Download an arbitrary artifact from a session (images, segment videos, audio)",
+)
 def api_get_artifact(session_id: str, relpath: str):
     session_dir = os.path.join(SESSIONS_ROOT, session_id)
     if not os.path.isdir(session_dir):
@@ -478,7 +487,9 @@ def api_get_artifact(session_id: str, relpath: str):
     elif ext in (".mp3",):
         media_type = "audio/mpeg"
 
-    return FileResponse(requested, media_type=media_type, filename=os.path.basename(requested))
+    return FileResponse(
+        requested, media_type=media_type, filename=os.path.basename(requested)
+    )
 
 
 @app.get("/api/voices", summary="List available TTS voices")
@@ -508,12 +519,14 @@ def api_list_voices(flat: bool | None = False):
                 continue
             for gender, names in genders.items():
                 for name in names:
-                    flat_list.append({
-                        "name": name,
-                        "lang": lang,
-                        "region": region,
-                        "gender": gender,
-                    })
+                    flat_list.append(
+                        {
+                            "name": name,
+                            "lang": lang,
+                            "region": region,
+                            "gender": gender,
+                        }
+                    )
     # Sort: lang, region, gender, then name
     flat_list.sort(key=lambda x: (x["lang"], x["region"], x["gender"], x["name"]))
     return {"voices": flat_list}
